@@ -1,0 +1,5 @@
+exportPattern("^[[:alpha:]]+")
+import(RCurl)
+import(XML)
+import(stringr)
+import(psych)

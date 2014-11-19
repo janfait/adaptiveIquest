@@ -1,0 +1,10 @@
+Package: adaptiveIquest
+Type: Package
+Title: Adaptive iquest contains methods that enable STEMMARK to do adaptive interviewing in its CAWI platform
+Version: 1.0
+Date: 2014-11-19
+Author: Jan Fait
+Maintainer: <fait@stemmark.cz>
+Imports: RCurl,XML,psych,stringr
+Description: Stores and returns the question distribution
+License: Any
