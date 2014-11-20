@@ -15,8 +15,8 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
       par<-"s"
     }
     #parse a filename from rid and question number
-    fname <- paste("rid",rid,"_",q,"_",par,".csv",sep="")
-    fname_v <- paste("rid",rid,"_",q,"_",par,"variance.csv",sep="")
+    fname <- paste("data/rid",rid,"_",q,"_",par,".csv",sep="")
+    fname_v <- paste("data/rid",rid,"_",q,"_",par,"variance.csv",sep="")
   }
   #if no selection is provided, we read the current file without writing in it
   if(is.null(selected)){

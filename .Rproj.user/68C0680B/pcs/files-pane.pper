@@ -1,8 +1,8 @@
 {
-    "path" : "P:/08_Inovace/R/opencpu/adaptiveIquest",
+    "path" : "P:/08_Inovace/R/opencpu/adaptiveIquest/R",
     "sortOrder" : [
         {
-            "ascending" : true,
+            "ascending" : false,
             "columnIndex" : 1
         },
         {
