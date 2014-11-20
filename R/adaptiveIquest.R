@@ -15,8 +15,8 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
       par<-"s"
     }
     #parse a filename from rid and question number
-    fname <- paste("http://192.168.10.181/ocpu/user/opencpu/library/adaptiveIquest/data",rid,"_",q,"_",par,".csv",sep="")
-    fname_v <- paste("http://192.168.10.181/ocpu/user/opencpu/library/adaptiveIquest/data",rid,"_",q,"_",par,"variance.csv",sep="")
+    fname <- paste("/home/opencpu/data",rid,"_",q,"_",par,".csv",sep="")
+    fname_v <- paste("/home/opencpu/data",rid,"_",q,"_",par,"variance.csv",sep="")
   }
   #if no selection is provided, we read the current file without writing in it
   if(is.null(selected)){
