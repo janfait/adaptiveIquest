@@ -89,9 +89,15 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
     v <- var(as.numeric(d[,q]))
   }
   
+  if(file.exists(fname_v)){
+    app<-T
+  }else{
+    app<-F
+  }
+  
   #resave file
   write.table(d,file=fname,sep=";",row.names=F)
-  write.table(v,file=fname_v,sep=";",row.names=F,append=T)
+  write.table(v,file=fname_v,sep=";",row.names=F,append=app)
   n<-nrow(d)
   #return list
   r<- list(data=d,dist=dist,mean=mn,sd=sd,var=v,n=n,type=0,demodist=demodist,message="OK")
