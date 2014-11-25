@@ -1,5 +1,5 @@
 
-distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mult=F,dir=NULL){
+distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mult=F,dir=NULL, dirv=NULL){
   
   if(is.null(demo)){
     demo=0
@@ -15,7 +15,7 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
       par<-"s"
     }
     #parse a filename from rid and question number
-    if(is.null(dir)){
+    if(is.null(dir)|is.null(dirv)){
       fname <- paste("/home/opencpu/data",rid,"_",q,"_",par,".csv",sep="")
       fname_v <- paste("/home/opencpu/data",rid,"_",q,"_",par,"variance.csv",sep="")
     }else{
