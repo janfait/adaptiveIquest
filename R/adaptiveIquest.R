@@ -20,6 +20,7 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
       fname_v <- paste("/home/opencpu/data",rid,"_",q,"_",par,"variance.csv",sep="")
     }else{
       fname <-dir
+      fname_v <- dirv
     }
   }
   #if no selection is provided, we read the current file without writing in it
