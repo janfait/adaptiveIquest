@@ -1,3 +1,16 @@
+###################
+# DISTRIBUTION
+#
+#  @q - [povinna, text] promenna otazky, jako napriklad "q1", "s10" apod.
+#  @rid - [povinna, integer] cislo vyzkumu
+#  @selected - [volitelna, integer/string] kterou hodnotu respondent vybral napr. 1,2,666 , v pripade multiple choice pak c(1,2,3)
+#  @choices - [volitelan,integer] jake hodnoty ma na vyber
+#  @mult - [volitelna,logical] je otazka multiple choice? napr. TRUE FALSE
+#  @dir - [povinna,text] nazev souboru v adresari /home/opencpu/data/#####.csv kam se uklada rozdeleni
+#  @dirv - [povinna,text] nazev souboru v adresari /home/opencpu/data/#####_v.csv  kam se uklada rozptyl
+#
+#  Ex : distribution(rid=10,q="q1",mult=T,selected=c("1","2"), choices=c(1,2,3,4,5,6,7),dir="C:/Users/fait/Desktop/test.csv",dirv="C:/Users/fait/Desktop/testv.csv")
+##################
 
 distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mult=F,dir=NULL, dirv=NULL){
   
@@ -34,6 +47,10 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
     }
     #selection is provided
   }else{
+    #parse text
+    choices <- eval(parse(text=choices))
+    selected <- eval(parse(text=selected))
+    
     if(!mult & length(selected)>1){
       er<-list(type=3,message="You claim this is single choice, yet selected has more items")
       return(er)
@@ -90,14 +107,14 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
   }
   
   if(file.exists(fname_v)){
-    app<-T
+    write.table(v,file=fname_v,sep=";",row.names=F,append=T,col.names=F)
   }else{
-    app<-F
+    write.table(v,file=fname_v,sep=";",row.names=F,col.names=F)
   }
   
   #resave file
   write.table(d,file=fname,sep=";",row.names=F)
-  write.table(v,file=fname_v,sep=";",row.names=F,append=app)
+  
   n<-nrow(d)
   #return list
   r<- list(data=d,dist=dist,mean=mn,sd=sd,var=v,n=n,type=0,demodist=demodist,message="OK")
@@ -105,3 +122,30 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
   
 }
 
+###################
+# DELETE
+#
+#  @dir - [povinna, text] adresa souboru, ktery chcete vymazat nejcasteji "/home/opencpu/data/xxxx.csv"
+#
+#  #############################
+
+delete <- function(dir=NULL){
+
+  if(is.null(dir)){
+    er <- list(type=1,message="You have not provided a filename")
+    return(er)
+  }else{
+    if(file.exists(dir)){
+      res<-try(file.remove(dir),silent=T)
+      if(inherits(res,"try-error")){
+        res<-list(type=3,"Failed to remove the file. Dunno what is wrong.")
+      }else{
+        res<-list(type=0,message="File removed")
+      }
+      return(res)
+    }else{
+      er <- list(type=2,message="The file you are trying to delete do not exist")
+      return(er)
+    }
+  }
+}
