@@ -47,7 +47,7 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
     }
     #selection is provided
   }else{
-    #parse text
+    #uprav textovy input na R vektory
     if(is.character(choices)){
       choices <- eval(parse(text=choices))
     }
@@ -84,33 +84,45 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
   }
   #output variables multiple/single
   if(mult){
+    #spocitej rozdeleni
     dist<-unname(unlist(d))
-    dist<- as.data.frame(table(label=dist),responseName="freq",stringsAsFacors=F)
+    dist<- as.data.frame(table(label=dist),responseName="freq",stringsAsFactors=F)
     dist$pct <- round(100*(dist$freq/nrow(d)),2)
+    #pridej demografika pokud jsou k dispozici
     if(is.null(demo)){
       demodist<-0
     }else{
       demodist<-0
     }
+    #deskriptivni statistiky
     d[,choice_length]<-apply(d[,choice_length],2,as.numeric)
     mn <- apply(d[,choice_length],2,mean)
     sd <- apply(d[,choice_length],2,sd)
     v <- apply(d[,choice_length],2,var)
+    dist_m <- dist[dist$label!="0",]
+    min <- list(label=dist_m$label[which.min(dist_m$pct)],pct=dist_m$pct[which.min(dist_m$pct)])
+    max <- list(label=dist_m$label[which.max(dist_m$pct)],pct=dist_m$pct[which.max(dist_m$pct)])
+
     
   }else{
+    #spocitej rozdeleni
     dist<-as.data.frame(table(label=d[,q]),responseName="freq",stringsAsFactors=F)
     dist$pct <- round(100*(dist$freq/nrow(d)),2)
+    #pridej demografika pokud jsou k dispozici
     if(is.null(demo)){
       demodist<-0
     }else{
       demodist<-as.data.frame(table(label=d[,q],demo=d[,"demo"]),responseName="freq",stringsAsFactors=F)
       demodist$pct <- round(100*(demodist$freq/nrow(d)),2)
     }
+    #deskriptivni statistiky
     mn <- mean(as.numeric(d[,q]))
     sd <- sd(as.numeric(d[,q]))
     v <- var(as.numeric(d[,q]))
+    min <- list(label=dist$label[which.min(dist$pct)],pct=dist$pct[which.min(dist$pct)])
+    max <- list(label=dist$label[which.max(dist$pct)],pct=dist$pct[which.max(dist$pct)])
   }
-  
+  #append variance to the var file
   if(file.exists(fname_v)){
     write.table(t(v),file=fname_v,sep=";",row.names=F,append=T,col.names=F)
   }else{
@@ -122,7 +134,7 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
   
   n<-nrow(d)
   #return list
-  r<- list(data=d,dist=dist,mean=mn,sd=sd,var=v,n=n,type=0,demodist=demodist,message="OK")
+  r<- list(data=d,dist=dist,mean=mn,sd=sd,var=v,n=n,max=max,min=min,type=0,demodist=demodist,message="OK")
   return(r)
   
 }
@@ -132,9 +144,9 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
 #
 #  @dir - [povinna, text] adresa souboru, ktery chcete vymazat nejcasteji "/home/opencpu/data/xxxx.csv"
 #
-#  #############################
+##############################
 
-delete <- function(dir=NULL){
+deletefile <- function(dir=NULL){
 
   if(is.null(dir)){
     er <- list(type=1,message="You have not provided a filename")
