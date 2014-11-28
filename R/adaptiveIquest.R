@@ -21,20 +21,13 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
   if(is.null(rid)|is.null(q)){
     er <- list(type=1,message="You have not provided a rid and q parameter")
     return(er)
+  }
+  if(is.null(dir)|is.null(dirv)){
+    er <- list(type=1,message="You have not provided a dir parameter")
+    return(er)
   }else{
-    if(mult){
-      par<-"m"
-    }else{
-      par<-"s"
-    }
-    #parse a filename from rid and question number
-    if(is.null(dir)|is.null(dirv)){
-      fname <- paste("/home/opencpu/data",rid,"_",q,"_",par,".csv",sep="")
-      fname_v <- paste("/home/opencpu/data",rid,"_",q,"_",par,"variance.csv",sep="")
-    }else{
-      fname <-dir
-      fname_v <- dirv
-    }
+    fname <- dir
+    fname_v <- dirv
   }
   #if no selection is provided, we read the current file without writing in it
   if(is.null(selected)){
@@ -53,10 +46,6 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
     }
     if(is.character(selected)){
       selected <- eval(parse(text=selected)) 
-    }
-    if(!mult & length(selected)>1){
-      er<-list(type=3,message="You claim this is single choice, yet selected has more items")
-      return(er)
     }
     #check if data.frame has been stored before
     if(file.exists(fname)){
@@ -102,8 +91,9 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
     dist_m <- dist[dist$label!="0",]
     min <- list(label=dist_m$label[which.min(dist_m$pct)],pct=dist_m$pct[which.min(dist_m$pct)])
     max <- list(label=dist_m$label[which.max(dist_m$pct)],pct=dist_m$pct[which.max(dist_m$pct)])
+    min$hit <- sum(min$label %in% selected)
+    max$hit <- sum(max$label %in% selected)
 
-    
   }else{
     #spocitej rozdeleni
     dist<-as.data.frame(table(label=d[,q]),responseName="freq",stringsAsFactors=F)
@@ -121,6 +111,9 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
     v <- var(as.numeric(d[,q]))
     min <- list(label=dist$label[which.min(dist$pct)],pct=dist$pct[which.min(dist$pct)])
     max <- list(label=dist$label[which.max(dist$pct)],pct=dist$pct[which.max(dist$pct)])
+    min$hit <- sum(min$label %in% selected)
+    max$hit <- sum(max$label %in% selected)
+    
   }
   #append variance to the var file
   if(file.exists(fname_v)){
@@ -134,7 +127,7 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
   
   n<-nrow(d)
   #return list
-  r<- list(data=d,dist=dist,mean=mn,sd=sd,var=v,n=n,max=max,min=min,type=0,demodist=demodist,message="OK")
+  r<- list(dist=dist,mean=mn,sd=sd,var=v,n=n,max=max,min=min,type=0,demodist=demodist,message="OK")
   return(r)
   
 }
