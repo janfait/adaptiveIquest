@@ -48,9 +48,12 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
     #selection is provided
   }else{
     #parse text
-    choices <- eval(parse(text=choices))
-    selected <- eval(parse(text=selected))
-    
+    if(is.character(choices)){
+      choices <- eval(parse(text=choices))
+    }
+    if(is.character(selected)){
+      selected <- eval(parse(text=selected)) 
+    }
     if(!mult & length(selected)>1){
       er<-list(type=3,message="You claim this is single choice, yet selected has more items")
       return(er)
@@ -81,7 +84,9 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
   }
   #output variables multiple/single
   if(mult){
-    dist<-sapply(choices,function(x) length(d[d==x]))
+    dist<-unname(unlist(d))
+    dist<- as.data.frame(table(label=dist),responseName="freq",stringsAsFacors=F)
+    dist$pct <- round(100*(dist$freq/nrow(d)),2)
     if(is.null(demo)){
       demodist<-0
     }else{
@@ -107,9 +112,9 @@ distribution <- function(rid=NULL,q=NULL,choices=NULL,selected=NULL,demo=NULL,mu
   }
   
   if(file.exists(fname_v)){
-    write.table(v,file=fname_v,sep=";",row.names=F,append=T,col.names=F)
+    write.table(t(v),file=fname_v,sep=";",row.names=F,append=T,col.names=F)
   }else{
-    write.table(v,file=fname_v,sep=";",row.names=F,col.names=F)
+    write.table(t(v),file=fname_v,sep=";",row.names=F,col.names=T)
   }
   
   #resave file
